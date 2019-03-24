@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="volume">Lautstärke</string>
+    <string name="delay">Verzögerung</string>
+    <string name="percent">Prozent</string>
+    <string name="seconds">Sekunden</string>
+    <string name="settings">Einstellungen</string>
+    <string name="devices">Geräte</string>
+    <string name="launching">Starte Wiedergabe</string>
+    <string name="waiting">Warte auf Verbindung</string>
+    <string name="playback">Wiedergabe</string>
+</resources>

@@ -1,0 +1,25 @@
+<?xml version ="1.0" encoding ="utf-8"?><!--  Learn More about how to use App Actions: https://developer.android.com/guide/actions/index.html -->
+<androidx.preference.PreferenceScreen
+        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+            android:title="@string/settings">
+
+        <SeekBarPreference
+                app:key="volume"
+                app:title="@string/volume"
+                app:summary="@string/percent"
+                app:icon="@drawable/ic_volume"
+                android:defaultValue="75"/>
+
+        <SeekBarPreference
+                app:key="delay"
+                app:title="@string/delay"
+                app:summary="@string/seconds"
+                app:icon="@drawable/ic_av_timer"
+                android:max="10"
+                android:defaultValue="5"/>
+
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>
