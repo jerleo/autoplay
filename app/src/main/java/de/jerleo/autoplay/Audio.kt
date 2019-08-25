@@ -19,23 +19,23 @@ class Audio(
         return manager
     }
 
-    fun startPlayback(): Boolean {
+    fun startPlayback(device: String): Boolean {
 
         if (manager()?.isMusicActive == true) {
             Log.i(Main.TAG, "Music is active")
             return false
         }
 
-        // Get delay in milliseconds from preference
-        val delay = settings.delay() * 1000L
+        // Get delay in milliseconds from device preference
+        val delay = settings.delay(device) * 1000L
 
         // Start playback with delay
-        Handler().postDelayed({ launchAudio() }, delay)
+        Handler().postDelayed({ launchAudio(device) }, delay)
 
         return true
     }
 
-    private fun launchAudio() {
+    private fun launchAudio(device: String) {
 
         Log.i(Main.TAG, "Sending media key event")
         manager()?.let {
@@ -45,15 +45,15 @@ class Audio(
                     KeyEvent.KEYCODE_MEDIA_PLAY
                 )
             )
-            adjustVolume()
+            adjustVolume(device)
         }
     }
 
-    private fun adjustVolume() {
+    private fun adjustVolume(device: String) {
 
         Log.i(Main.TAG, "Adjusting volume")
         manager()?.let {
-            val percentage = settings.volume()
+            val percentage = settings.volume(device)
             val maxVolume = it.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
             val currentVolume = it.getStreamVolume(AudioManager.STREAM_MUSIC)
             val targetVolume = percentage * maxVolume / 100

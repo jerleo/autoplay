@@ -6,7 +6,7 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.media.app.NotificationCompat as MediaNotificationCompat
+import androidx.preference.PreferenceManager
 
 class Main : AppCompatActivity() {
 
@@ -33,9 +33,9 @@ class Main : AppCompatActivity() {
     fun startPlayback(device: BluetoothDevice) {
 
         if (settings.isChecked(device))
-            if (audio.startPlayback()) {
+            if (audio.startPlayback(device.address)) {
 
-                Log.i(Main.TAG, "Launching playback")
+                Log.i(TAG, "Launching playback")
                 val text: String = getString(R.string.launching) +
                         ": " + device.name
                 notification.show(getString(R.string.playback), text)
@@ -53,7 +53,11 @@ class Main : AppCompatActivity() {
             .replace(R.id.settings, settings)
             .commit()
 
-        Log.i(Main.TAG, "Listening for bluetooth events")
+        // Monitor preference changes
+        PreferenceManager.getDefaultSharedPreferences(this)
+            .registerOnSharedPreferenceChangeListener(settings)
+
+        Log.i(TAG, "Listening for bluetooth events")
         registerReceiver(
             Bluetooth,
             IntentFilter().apply {
@@ -72,7 +76,7 @@ class Main : AppCompatActivity() {
 
     override fun onDestroy() {
 
-        Log.i(Main.TAG, "Stopped listening for bluetooth events")
+        Log.i(TAG, "Stopped listening for bluetooth events")
         unregisterReceiver(Bluetooth)
         notification.cancel()
         super.onDestroy()
