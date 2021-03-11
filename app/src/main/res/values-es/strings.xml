@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name" translatable="false">AutoPlay</string>
+    <string name="after">después</string>
+    <string name="volume">Volumen</string>
+    <string name="delay">Retraso</string>
+    <string name="percent">Porcentaje</string>
+    <string name="seconds">Segundos</string>
+    <string name="settings">Ajustes</string>
+    <string name="devices">Dispositivos</string>
+    <string name="launching">Iniciar la reproducción</string>
+    <string name="bluetooth" translatable="false">Bluetooth</string>
+    <string name="waiting">Esperando la conexión</string>
+    <string name="playback">Reproducir</string>
+</resources>
