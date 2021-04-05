@@ -27,10 +27,10 @@ class Audio(
         }
 
         // Get delay in milliseconds from device preference
-        val delay = settings.delay(device) * 1000L
+        val delay = settings.delay(device)?.times(1000L)
 
         // Start playback with delay
-        Handler().postDelayed({ launchAudio(device) }, delay)
+        delay?.let { Handler().postDelayed({ launchAudio(device) }, it) }
 
         return true
     }
@@ -56,7 +56,7 @@ class Audio(
             val percentage = settings.volume(device)
             val maxVolume = it.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
             val currentVolume = it.getStreamVolume(AudioManager.STREAM_MUSIC)
-            val targetVolume = percentage * maxVolume / 100
+            val targetVolume = (percentage?.times(maxVolume) ?: 0) / 100
 
             ValueAnimator.ofInt(currentVolume, targetVolume).apply {
                 duration = 3000L

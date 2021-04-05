@@ -23,8 +23,8 @@ class Settings : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenc
         addPreferencesFromResource(R.xml.settings)
 
         // Set seek bar increment
-        val volume = findPreference(KEY_VOLUME) as SeekBarPreference
-        volume.setOnPreferenceChangeListener { preference, newValue ->
+        val volume = findPreference(KEY_VOLUME) as? SeekBarPreference
+        volume?.setOnPreferenceChangeListener { preference, newValue ->
             (preference as SeekBarPreference).value = (newValue as Int) / VOL_STEP * VOL_STEP
             false
         }
@@ -37,10 +37,10 @@ class Settings : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenc
     override fun onSharedPreferenceChanged(sp: SharedPreferences?, key: String?) {
 
         // Change device summary
-        setSummary(key, true)
+        key?.let { setSummary(it, true) }
     }
 
-    private fun setSummary(key: String?, change: Boolean) {
+    private fun setSummary(key: String, change: Boolean) {
 
         // Check for device or return
         val device = findPreference(key) as? SwitchPreferenceCompat ?: return
@@ -52,24 +52,24 @@ class Settings : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenc
         }
 
         // Get hidden preferences
-        val volume = (findPreference("${device.key}-$KEY_VOLUME") as SeekBarPreference)
-        val delay = (findPreference("${device.key}-$KEY_DELAY") as SeekBarPreference)
+        val volume = (findPreference("${device.key}-$KEY_VOLUME") as? SeekBarPreference)
+        val delay = (findPreference("${device.key}-$KEY_DELAY") as? SeekBarPreference)
 
         // Preference change requested
         if (change) {
-            volume.value = volume()
-            delay.value = delay()
+            volume?.value = volume()
+            delay?.value = delay()
         }
 
         // Set device summary
-        device.summary = "${getString(R.string.volume)} ${volume.value} % " +
-                "${getString(R.string.after)} ${delay.value} ${getString(R.string.seconds)}"
+        device.summary = "${getString(R.string.volume)} ${volume?.value} % " +
+                "${getString(R.string.after)} ${delay?.value} ${getString(R.string.seconds)}"
     }
 
     fun addDevices() {
 
         // Avoid adding twice
-        if (findPreference(KEY_DEVICES) != null)
+        if ((findPreference(KEY_DEVICES) as? SwitchPreferenceCompat) != null)
             return
 
         // Add preference header
@@ -108,30 +108,31 @@ class Settings : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenc
 
     fun removeDevices() {
 
-        (findPreference(KEY_DEVICES) as PreferenceCategory).let {
+        (findPreference(KEY_DEVICES) as? PreferenceCategory).let {
             preferenceScreen.removePreference(it)
         }
     }
 
     // Get global delay preference value
-    private fun delay() = (findPreference(KEY_DELAY) as SeekBarPreference).value
+    private fun delay() = (findPreference(KEY_DELAY) as? SeekBarPreference)!!.value
 
     // Get global volume preference value
-    private fun volume() = (findPreference(KEY_VOLUME) as SeekBarPreference).value
+    private fun volume() = (findPreference(KEY_VOLUME) as? SeekBarPreference)!!.value
 
     // Get device delay preference value
     fun delay(device: String) =
-        (findPreference("$device-$KEY_DELAY") as SeekBarPreference).value
+        (findPreference("$device-$KEY_DELAY") as? SeekBarPreference)?.value
 
     // Get device volume preference value
     fun volume(device: String) =
-        (findPreference("$device-$KEY_VOLUME") as SeekBarPreference).value
+        (findPreference("$device-$KEY_VOLUME") as? SeekBarPreference)?.value
 
     // Get checked preference of bluetooth device
     fun isChecked(device: BluetoothDevice?) =
 
-        findPreference(device?.address)?.let {
-            (it as SwitchPreferenceCompat).isChecked
+        device?.address?.let {
+            findPreference(it) as? SwitchPreferenceCompat
+        }.let {
+            it?.isChecked
         } ?: false
-
 }
