@@ -8,26 +8,22 @@ import android.util.Log
 import android.view.KeyEvent
 
 class Audio(
-    private val context: Context,
-    private val settings: Settings
+    private val main: Main
 ) {
-    private var manager: AudioManager? = null
 
-    private fun manager(): AudioManager? {
-        if (manager == null)
-            manager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        return manager
+    private val manager: AudioManager by lazy {
+        main.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     }
 
-    fun startPlayback(device: String): Boolean {
+    fun startPlayback(device: Device): Boolean {
 
-        if (manager()?.isMusicActive == true) {
+        if (manager.isMusicActive == true) {
             Log.i(Main.TAG, "Music is active")
             return false
         }
 
         // Get delay in milliseconds from device preference
-        val delay = settings.delay(device)?.times(1000L)
+        val delay = main.settings.delay(device)?.times(1000L)
 
         // Start playback with delay
         delay?.let { Handler().postDelayed({ launchAudio(device) }, it) }
@@ -35,25 +31,22 @@ class Audio(
         return true
     }
 
-    private fun launchAudio(device: String) {
+    private fun launchAudio(device: Device) {
 
         Log.i(Main.TAG, "Sending media key event")
-        manager()?.let {
+        manager.let {
             it.dispatchMediaKeyEvent(
-                KeyEvent(
-                    KeyEvent.ACTION_DOWN,
-                    KeyEvent.KEYCODE_MEDIA_PLAY
-                )
+                KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY)
             )
             adjustVolume(device)
         }
     }
 
-    private fun adjustVolume(device: String) {
+    private fun adjustVolume(device: Device) {
 
         Log.i(Main.TAG, "Adjusting volume")
-        manager()?.let {
-            val percentage = settings.volume(device)
+        manager.let {
+            val percentage = main.settings.volume(device)
             val maxVolume = it.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
             val currentVolume = it.getStreamVolume(AudioManager.STREAM_MUSIC)
             val targetVolume = (percentage?.times(maxVolume) ?: 0) / 100
