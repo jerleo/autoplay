@@ -8,6 +8,7 @@
                 android:defaultValue="75"
                 app:icon="@drawable/ic_volume"
                 app:key="volume"
+                app:showSeekBarValue="true"
                 app:summary="@string/percent"
                 app:title="@string/volume" />
 
@@ -16,6 +17,7 @@
                 android:max="10"
                 app:icon="@drawable/ic_av_timer"
                 app:key="delay"
+                app:showSeekBarValue="true"
                 app:summary="@string/seconds"
                 app:title="@string/delay" />
 

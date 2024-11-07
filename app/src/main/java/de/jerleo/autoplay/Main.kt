@@ -20,7 +20,7 @@ class Main : AppCompatActivity() {
     companion object {
         const val TAG = "AutoPlay"
         private const val BLUETOOTH_ENABLE = 100
-        private const val REQUEST_CODE = 101
+        private const val PERMISSIONS_ENABLE = 101
     }
 
     private val audio = Audio(this)
@@ -54,11 +54,12 @@ class Main : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE
-            && grantResults.isNotEmpty()
-            && grantResults[0] == PackageManager.PERMISSION_GRANTED
-        )
-            setup()
+        if (requestCode == PERMISSIONS_ENABLE)
+            if (grantResults.size == 2
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                && grantResults[1] == PackageManager.PERMISSION_GRANTED
+            )
+                setup()
     }
 
     @SuppressLint("MissingPermission")
@@ -70,6 +71,8 @@ class Main : AppCompatActivity() {
     }
 
     fun setup() {
+
+        // Show settings
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.frame_settings, settings)
@@ -102,9 +105,14 @@ class Main : AppCompatActivity() {
             }
         } else {
             ActivityCompat.requestPermissions(
-                this, arrayOf(BLUETOOTH_CONNECT, POST_NOTIFICATIONS), REQUEST_CODE
+                this, arrayOf(BLUETOOTH_CONNECT, POST_NOTIFICATIONS), PERMISSIONS_ENABLE
             )
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        notification.cancel()
     }
 
 }

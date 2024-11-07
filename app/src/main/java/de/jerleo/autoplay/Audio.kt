@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.media.AudioManager
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.KeyEvent
 
@@ -26,7 +27,10 @@ class Audio(
         val delay = main.settings.delay(device)?.times(1000L)
 
         // Start playback with delay
-        delay?.let { Handler().postDelayed({ launchAudio(device) }, it) }
+        delay?.let {
+            Handler(Looper.getMainLooper())
+                .postDelayed({ launchAudio(device) }, it)
+        }
 
         return true
     }

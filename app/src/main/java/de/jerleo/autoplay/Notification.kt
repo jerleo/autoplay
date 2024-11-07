@@ -5,13 +5,16 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 
 class Notification(private val main: Main) {
 
     companion object {
         const val CHANNEL_ID = "Information"
         const val NOTIFICATION_ID = 1
+    }
+
+    val manager: NotificationManager by lazy {
+        main.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
 
     @SuppressLint("MissingPermission")
@@ -25,24 +28,23 @@ class Notification(private val main: Main) {
             setContentTitle(title)
             setContentText(text)
         }
-        with(NotificationManagerCompat.from(main)) {
-            notify(NOTIFICATION_ID, builder.build())
-        }
+        manager.notify(NOTIFICATION_ID, builder.build())
     }
 
     private fun createChannel(): Boolean {
 
-        val notificationManager: NotificationManager =
-            main.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        if (!notificationManager.areNotificationsEnabled())
+        if (!manager.areNotificationsEnabled())
             return false
 
         val name = CHANNEL_ID
         val importance = NotificationManager.IMPORTANCE_DEFAULT
         val channel = NotificationChannel(CHANNEL_ID, name, importance)
-        notificationManager.createNotificationChannel(channel)
+        manager.createNotificationChannel(channel)
         return true
+    }
+
+    fun cancel() {
+        manager.cancelAll()
     }
 
 }
